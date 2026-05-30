@@ -24,7 +24,7 @@ public class ProjectsController {
 
     @PostMapping
     public ProjectDto createProject(@RequestBody @Valid ProjectDto projectDto) {
-        Project project = projectMapper.convertToProject(projectDto);
+        Project project = projectMapper.convertToEntity(projectDto);
         Project createdProject = projectsService.create(project);
         return projectMapper.convertToDto(createdProject);
     }
@@ -42,7 +42,7 @@ public class ProjectsController {
 
     @PatchMapping("/{id}")
     public ProjectDto editProject(@RequestBody @Valid ProjectDto projectDto, @PathVariable Long id) {
-        Project project = projectsService.edit(id, projectMapper.convertToProject(projectDto));
+        Project project = projectsService.edit(id, projectMapper.convertToEntity(projectDto));
         return projectMapper.convertToDto(project);
     }
 
@@ -53,6 +53,6 @@ public class ProjectsController {
 
     @PatchMapping("/{id}/assign")
     public void assignUser(@PathVariable Long id, @RequestBody @Valid UserDto userDto) {
-       projectsService.assign(id, userMapper.convertToUser(userDto));
+       projectsService.assign(id, userMapper.convertToEntity(userDto));
     }
 }

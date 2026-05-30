@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -24,10 +26,12 @@ public class ProjectDto {
     @Size(max = 5000, message = "Description should not exceed 5000 characters")
     private String description;
 
-    private UserDto owner;
+    private Long ownerId;
 
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
+    private List<TaskDto> tasks = new ArrayList<>();
 
 }

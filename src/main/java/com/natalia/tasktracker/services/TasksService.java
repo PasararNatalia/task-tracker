@@ -18,6 +18,7 @@ import java.util.List;
 public class TasksService {
 
     private final TasksRepository tasksRepository;
+    private final ProjectsRepository projectsRepository;
     private final UsersRepository usersRepository;
 
     @Transactional
@@ -49,12 +50,22 @@ public class TasksService {
     }
 
     @Transactional
-    public void assign(Long taskId, User selectedUser) {
+    public void assignUser(Long taskId, User selectedUser) {
         Task task = findById(taskId);
 
         User user = usersRepository.findById(selectedUser.getId())
                 .orElseThrow(() -> new RuntimeException(("User not found")));
 
         task.setAssignee(user);
+    }
+
+    @Transactional
+    public void setProject(Long taskId, Project selectedProject) {
+        Task task = findById(taskId);
+
+        Project project = projectsRepository.findById(selectedProject.getId())
+                .orElseThrow(() -> new RuntimeException(("Project not found")));
+
+        task.setProject(project);
     }
 }

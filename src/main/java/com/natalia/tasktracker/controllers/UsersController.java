@@ -21,7 +21,8 @@ public class UsersController {
 
     @PostMapping
     public UserDto createUser(@RequestBody @Valid UserDto userDto) {
-        User user = userMapper.convertToUser(userDto);
+
+        User user = userMapper.convertToEntity(userDto);
         User createdUser = usersService.create(user);
         return userMapper.convertToDto(createdUser);
     }
@@ -39,7 +40,7 @@ public class UsersController {
 
     @PatchMapping("/{id}")
     public UserDto editUser(@RequestBody @Valid UserDto userDto, @PathVariable Long id) {
-        User user = usersService.edit(id, userMapper.convertToUser(userDto));
+        User user = usersService.edit(id, userMapper.convertToEntity(userDto));
         return userMapper.convertToDto(user);
     }
 
@@ -47,5 +48,7 @@ public class UsersController {
     public void deleteUser(@PathVariable Long id) {
         usersService.deleteUser(id);
     }
+
+
 }
 

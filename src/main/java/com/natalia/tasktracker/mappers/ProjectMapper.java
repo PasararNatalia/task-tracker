@@ -2,21 +2,44 @@ package com.natalia.tasktracker.mappers;
 
 import com.natalia.tasktracker.dto.ProjectDto;
 import com.natalia.tasktracker.models.Project;
-import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
-@RequiredArgsConstructor
 @Component
 public class ProjectMapper {
 
-    private final ModelMapper mapper;
+    public ProjectDto convertToDto(Project project) {
+        if (project == null) {
+            return null;
+        }
 
-    public Project convertToProject(ProjectDto projectDto) {
-        return mapper.map(projectDto, Project.class);
+        ProjectDto dto = new ProjectDto();
+
+        dto.setId(project.getId());
+        dto.setName(project.getName());
+        dto.setDescription(project.getDescription());
+        dto.setCreatedAt(project.getCreatedAt());
+        dto.setUpdatedAt(project.getUpdatedAt());
+
+        if (project.getOwner() != null) {
+            dto.setOwnerId(project.getOwner().getId());
+        }
+
+        return dto;
     }
 
-    public ProjectDto convertToDto(Project project) {
-        return mapper.map(project, ProjectDto.class);
+    public Project convertToEntity(ProjectDto dto) {
+        if (dto == null) {
+            return null;
+        }
+
+        Project project = new Project();
+
+        project.setId(dto.getId());
+        project.setName(dto.getName());
+
+        project.setDescription(dto.getDescription());
+
+        return project;
+
     }
 }
