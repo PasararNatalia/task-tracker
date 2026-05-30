@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -39,5 +41,9 @@ public class UserDto {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
+    private List<ProjectDto> projects = new ArrayList<>();
+
+    private List<TaskDto> tasks = new ArrayList<>();
 
 }

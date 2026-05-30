@@ -2,21 +2,41 @@ package com.natalia.tasktracker.mappers;
 
 import com.natalia.tasktracker.dto.UserDto;
 import com.natalia.tasktracker.models.User;
-import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
-@RequiredArgsConstructor
 @Component
 public class UserMapper {
 
-    private final ModelMapper mapper;
+    public UserDto convertToDto(User user) {
+        if (user == null) {
+            return null;
+        }
 
-    public User convertToUser(UserDto dto) {
-        return mapper.map(dto, User.class);
+        UserDto dto = new UserDto();
+
+        dto.setId(user.getId());
+        dto.setUsername(user.getUsername());
+        dto.setEmail(user.getEmail());
+        dto.setRole(user.getRole());
+        dto.setCreatedAt(user.getCreatedAt());
+        dto.setUpdatedAt(user.getUpdatedAt());
+
+        return dto;
     }
 
-    public UserDto convertToDto(User user) {
-        return  mapper.map(user, UserDto.class);
+    public User convertToEntity(UserDto dto) {
+        if (dto == null) {
+            return null;
+        }
+
+        User user = new User();
+
+        user.setId(dto.getId());
+        user.setUsername(dto.getUsername());
+        user.setEmail(dto.getEmail());
+        user.setPassword(dto.getPassword());
+        user.setRole(dto.getRole());
+
+        return user;
     }
 }

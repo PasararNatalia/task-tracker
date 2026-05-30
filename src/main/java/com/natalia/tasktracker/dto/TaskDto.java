@@ -33,13 +33,14 @@ public class TaskDto {
     @NotNull(message = "Priority is required")
     private TaskPriority priority;
 
-    private UserDto assignee;
+    private Long assigneeId;
 
-    private ProjectDto project;
+    private Long projectId;
 
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
 
     private LocalDate dueDate;
+
 }

@@ -1,7 +1,9 @@
 package com.natalia.tasktracker.controllers;
 
+import com.natalia.tasktracker.dto.ProjectDto;
 import com.natalia.tasktracker.dto.TaskDto;
 import com.natalia.tasktracker.dto.UserDto;
+import com.natalia.tasktracker.mappers.ProjectMapper;
 import com.natalia.tasktracker.mappers.TaskMapper;
 import com.natalia.tasktracker.mappers.UserMapper;
 import com.natalia.tasktracker.models.Task;
@@ -20,11 +22,12 @@ public class TasksController {
 
     private final TasksService tasksService;
     private final TaskMapper taskMapper;
+    private final ProjectMapper projectMapper;
     private final UserMapper userMapper;
 
     @PostMapping
     public TaskDto createTask(@RequestBody @Valid TaskDto taskDto) {
-        Task task = taskMapper.convertToTask(taskDto);
+        Task task = taskMapper.convertToEntity(taskDto);
         Task createdTask = tasksService.create(task);
         return taskMapper.convertToDto(createdTask);
     }
@@ -42,7 +45,7 @@ public class TasksController {
 
     @PatchMapping("/{id}")
     public TaskDto editTask(@RequestBody @Valid TaskDto taskDto, @PathVariable Long id) {
-        Task task = tasksService.edit(id, taskMapper.convertToTask(taskDto));
+        Task task = tasksService.edit(id, taskMapper.convertToEntity(taskDto));
         return taskMapper.convertToDto(task);
     }
 
@@ -51,8 +54,13 @@ public class TasksController {
         tasksService.delete(id);
     }
 
-    @PatchMapping("/{id}/assign")
+    @PatchMapping("/{id}/assignProject")
+    public void setProject(@PathVariable Long id, @RequestBody @Valid ProjectDto projectDto) {
+        tasksService.setProject(id, projectMapper.convertToEntity(projectDto));
+    }
+
+    @PatchMapping("/{id}/assignUser")
     public void assignUser(@PathVariable Long id, @RequestBody @Valid UserDto userDto) {
-        tasksService.assign(id, userMapper.convertToUser(userDto));
+        tasksService.assignUser(id, userMapper.convertToEntity(userDto));
     }
 }
