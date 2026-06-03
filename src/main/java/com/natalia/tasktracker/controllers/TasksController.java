@@ -10,9 +10,13 @@ import com.natalia.tasktracker.models.Task;
 import com.natalia.tasktracker.services.TasksService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -26,41 +30,83 @@ public class TasksController {
     private final UserMapper userMapper;
 
     @PostMapping
-    public TaskDto createTask(@RequestBody @Valid TaskDto taskDto) {
+    public ResponseEntity<Map<String, Object>> createTask(@RequestBody @Valid TaskDto taskDto) {
         Task task = taskMapper.convertToEntity(taskDto);
         Task createdTask = tasksService.create(task);
-        return taskMapper.convertToDto(createdTask);
+        TaskDto createdTaskDto = taskMapper.convertToDto(createdTask);
+
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("message", "Task created successfully");
+        response.put("task", createdTaskDto);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping("/{id}")
-    public TaskDto getTask(@PathVariable Long id) {
+    public ResponseEntity<Map<String, Object>> getTask(@PathVariable Long id) {
         Task task = tasksService.findById(id);
-        return taskMapper.convertToDto(task);
+        TaskDto taskDto = taskMapper.convertToDto(task);
+
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("message", "Task found successfully");
+        response.put("task", taskDto);
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping
-    public List<TaskDto> getAllTasks() {
-        return tasksService.findAll().stream().map(taskMapper::convertToDto).collect(Collectors.toList());
+    public ResponseEntity<Map<String, Object>> getAllTasks() {
+        List<TaskDto> tasks = tasksService.findAll()
+                .stream()
+                .map(taskMapper::convertToDto)
+                .collect(Collectors.toList());
+
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("message", "Tasks retrieved successfully");
+        response.put("tasks", tasks);
+
+        return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/{id}")
-    public TaskDto editTask(@RequestBody @Valid TaskDto taskDto, @PathVariable Long id) {
+    public ResponseEntity<Map<String, Object>> editTask(@RequestBody @Valid TaskDto taskDto, @PathVariable Long id) {
         Task task = tasksService.edit(id, taskMapper.convertToEntity(taskDto));
-        return taskMapper.convertToDto(task);
+        TaskDto updatedTaskDto = taskMapper.convertToDto(task);
+
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("message", "Task updated successfully");
+        response.put("task", updatedTaskDto);
+
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteTask(@PathVariable Long id) {
+    public ResponseEntity<Map<String, Object>> deleteTask(@PathVariable Long id) {
         tasksService.delete(id);
+
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("message", "Task deleted successfully");
+
+        return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/{id}/assignProject")
-    public void setProject(@PathVariable Long id, @RequestBody @Valid ProjectDto projectDto) {
-        tasksService.setProject(id, projectMapper.convertToEntity(projectDto));
+    public ResponseEntity<Map<String, Object>> assignProject(@PathVariable Long id, @RequestBody @Valid ProjectDto projectDto) {
+        tasksService.assignProject(id, projectMapper.convertToEntity(projectDto));
+
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("message", "Project assigned successfully");
+
+        return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/{id}/assignUser")
-    public void assignUser(@PathVariable Long id, @RequestBody @Valid UserDto userDto) {
+    public ResponseEntity<Map<String, Object>> assignUser(@PathVariable Long id, @RequestBody @Valid UserDto userDto) {
         tasksService.assignUser(id, userMapper.convertToEntity(userDto));
+
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("message", "User assigned successfully");
+
+        return ResponseEntity.ok(response);
     }
 }
