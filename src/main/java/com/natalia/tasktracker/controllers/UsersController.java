@@ -6,9 +6,13 @@ import com.natalia.tasktracker.models.User;
 import com.natalia.tasktracker.services.UsersService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -20,35 +24,67 @@ public class UsersController {
     private final UserMapper userMapper;
 
     @PostMapping
-    public UserDto createUser(@RequestBody @Valid UserDto userDto) {
-
+    public ResponseEntity<Map<String, Object>> createUser(@RequestBody @Valid UserDto userDto) {
         User user = userMapper.convertToEntity(userDto);
         User createdUser = usersService.create(user);
-        return userMapper.convertToDto(createdUser);
+        UserDto createdUserDto = userMapper.convertToDto(createdUser);
+
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("message", "User created successfully");
+        response.put("user", createdUserDto);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping("/{id}")
-    public UserDto getUser(@PathVariable Long id) {
+    public ResponseEntity<Map<String, Object>> getUser(@PathVariable Long id) {
         User user = usersService.findById(id);
-        return userMapper.convertToDto(user);
+        UserDto userDto = userMapper.convertToDto(user);
+
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("message", "User found successfully");
+        response.put("user", userDto);
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping
-    public List<UserDto> getAllUsers() {
-        return usersService.findALl().stream().map(userMapper::convertToDto).collect(Collectors.toList());
+    public ResponseEntity<Map<String, Object>> getAllUsers() {
+        List<UserDto> users = usersService.findALl()
+                .stream()
+                .map(userMapper::convertToDto)
+                .collect(Collectors.toList());
+
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("message", "Users retrieved successfully");
+        response.put("users", users);
+
+        return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/{id}")
-    public UserDto editUser(@RequestBody @Valid UserDto userDto, @PathVariable Long id) {
+    public ResponseEntity<Map<String, Object>> editUser(
+            @RequestBody @Valid UserDto userDto,
+            @PathVariable Long id
+    ) {
         User user = usersService.edit(id, userMapper.convertToEntity(userDto));
-        return userMapper.convertToDto(user);
+        UserDto updatedUserDto = userMapper.convertToDto(user);
+
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("message", "User updated successfully");
+        response.put("user", updatedUserDto);
+
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable Long id) {
+    public ResponseEntity<Map<String, Object>> deleteUser(@PathVariable Long id) {
         usersService.deleteUser(id);
+
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("message", "User deleted successfully");
+
+        return ResponseEntity.ok(response);
     }
-
-
 }
 

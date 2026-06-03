@@ -60,7 +60,7 @@ public class TasksService {
     }
 
     @Transactional
-    public void setProject(Long taskId, Project selectedProject) {
+    public void assignProject(Long taskId, Project selectedProject) {
         Task task = findById(taskId);
 
         Project project = projectsRepository.findById(selectedProject.getId())

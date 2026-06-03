@@ -3,6 +3,7 @@ package com.natalia.tasktracker.services;
 import com.natalia.tasktracker.models.User;
 import com.natalia.tasktracker.models.UserRole;
 import com.natalia.tasktracker.repositories.UsersRepository;
+import com.natalia.tasktracker.util.EmailAlreadyExistsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +19,11 @@ public class UsersService {
 
     @Transactional
     public User create(User user) {
+
+        if (userRepository.existsByEmail(user.getEmail())) {
+            throw new EmailAlreadyExistsException(user.getEmail());
+        }
+
         return userRepository.save(enrichUser(user));
     }
 
