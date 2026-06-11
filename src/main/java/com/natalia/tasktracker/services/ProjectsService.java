@@ -49,10 +49,10 @@ public class ProjectsService {
     }
 
     @Transactional
-    public void assign(Long projectId, User selectedUser) {
+    public void assign(Long projectId, Long userId) {
         Project project = findById(projectId);
 
-        User user = usersRepository.findById(selectedUser.getId())
+        User user = usersRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException(("User not found")));
 
         project.setOwner(user);
