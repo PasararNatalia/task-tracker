@@ -50,22 +50,22 @@ public class TasksService {
     }
 
     @Transactional
-    public void assignUser(Long taskId, User selectedUser) {
+    public void assignProject(Long taskId, Long projectId) {
         Task task = findById(taskId);
 
-        User user = usersRepository.findById(selectedUser.getId())
-                .orElseThrow(() -> new RuntimeException(("User not found")));
-
-        task.setAssignee(user);
-    }
-
-    @Transactional
-    public void assignProject(Long taskId, Project selectedProject) {
-        Task task = findById(taskId);
-
-        Project project = projectsRepository.findById(selectedProject.getId())
+        Project project = projectsRepository.findById(projectId)
                 .orElseThrow(() -> new RuntimeException(("Project not found")));
 
         task.setProject(project);
+    }
+
+    @Transactional
+    public void assignUser(Long taskId, Long userId) {
+        Task task = findById(taskId);
+
+        User user = usersRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException(("User not found")));
+
+        task.setAssignee(user);
     }
 }

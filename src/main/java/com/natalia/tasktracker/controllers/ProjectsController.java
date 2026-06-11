@@ -1,9 +1,7 @@
 package com.natalia.tasktracker.controllers;
 
 import com.natalia.tasktracker.dto.ProjectDto;
-import com.natalia.tasktracker.dto.UserDto;
 import com.natalia.tasktracker.mappers.ProjectMapper;
-import com.natalia.tasktracker.mappers.UserMapper;
 import com.natalia.tasktracker.models.Project;
 import com.natalia.tasktracker.services.ProjectsService;
 import jakarta.validation.Valid;
@@ -24,7 +22,6 @@ public class ProjectsController {
 
     private final ProjectsService projectsService;
     private final ProjectMapper projectMapper;
-    private final UserMapper userMapper;
 
     @PostMapping
     public ResponseEntity<Map<String, Object>> createProject(@RequestBody @Valid ProjectDto projectDto) {
@@ -87,9 +84,9 @@ public class ProjectsController {
         return ResponseEntity.ok(response);
     }
 
-    @PatchMapping("/{id}/assign")
-    public ResponseEntity<Map<String, Object>> assignUser(@PathVariable Long id, @RequestBody @Valid UserDto userDto) {
-       projectsService.assign(id, userMapper.convertToEntity(userDto));
+    @PatchMapping("/{projectId}/{userId}/assign")
+    public ResponseEntity<Map<String, Object>> assignUser(@PathVariable Long projectId, @PathVariable Long userId) {
+       projectsService.assign(projectId, userId);
 
         Map<String, Object> response = new LinkedHashMap<>();
         response.put("message", "User assigned successfully");

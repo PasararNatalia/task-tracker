@@ -1,11 +1,7 @@
 package com.natalia.tasktracker.controllers;
 
-import com.natalia.tasktracker.dto.ProjectDto;
 import com.natalia.tasktracker.dto.TaskDto;
-import com.natalia.tasktracker.dto.UserDto;
-import com.natalia.tasktracker.mappers.ProjectMapper;
 import com.natalia.tasktracker.mappers.TaskMapper;
-import com.natalia.tasktracker.mappers.UserMapper;
 import com.natalia.tasktracker.models.Task;
 import com.natalia.tasktracker.services.TasksService;
 import jakarta.validation.Valid;
@@ -26,8 +22,6 @@ public class TasksController {
 
     private final TasksService tasksService;
     private final TaskMapper taskMapper;
-    private final ProjectMapper projectMapper;
-    private final UserMapper userMapper;
 
     @PostMapping
     public ResponseEntity<Map<String, Object>> createTask(@RequestBody @Valid TaskDto taskDto) {
@@ -90,9 +84,9 @@ public class TasksController {
         return ResponseEntity.ok(response);
     }
 
-    @PatchMapping("/{id}/assignProject")
-    public ResponseEntity<Map<String, Object>> assignProject(@PathVariable Long id, @RequestBody @Valid ProjectDto projectDto) {
-        tasksService.assignProject(id, projectMapper.convertToEntity(projectDto));
+    @PatchMapping("/{taskId}/{projectId}/assignProject")
+    public ResponseEntity<Map<String, Object>> assignProject(@PathVariable Long taskId, @PathVariable Long projectId) {
+        tasksService.assignProject(taskId, projectId);
 
         Map<String, Object> response = new LinkedHashMap<>();
         response.put("message", "Project assigned successfully");
@@ -100,9 +94,9 @@ public class TasksController {
         return ResponseEntity.ok(response);
     }
 
-    @PatchMapping("/{id}/assignUser")
-    public ResponseEntity<Map<String, Object>> assignUser(@PathVariable Long id, @RequestBody @Valid UserDto userDto) {
-        tasksService.assignUser(id, userMapper.convertToEntity(userDto));
+    @PatchMapping("/{taskId}/{userId}/assignUser")
+    public ResponseEntity<Map<String, Object>> assignUser(@PathVariable Long taskId, @PathVariable Long userId) {
+        tasksService.assignUser(taskId, userId);
 
         Map<String, Object> response = new LinkedHashMap<>();
         response.put("message", "User assigned successfully");
